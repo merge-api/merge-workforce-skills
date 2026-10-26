@@ -11,16 +11,20 @@ description: Before each 1:1 on the manager's calendar, a short brief on that pe
 - Not this skill: external meetings (use merge-meeting-prep-brief); group meetings.
 
 ## Steps
-1. Find 1:1s: google_calendar list_events for today (user's timezone), single_events=true.
+1. Check connections first. For each connector below, confirm it is signed in and that the tools this skill needs are available; access can be granted per tool, so a signed-in connector can still be missing one. Tell the user which connectors need sign-in or an access request and what that rules out, then continue with the ready ones.
+   - On Agent Handler: validate_credential shows sign-in; a reauth_required error names the authenticate tool to give the user. search_tools with connector_slugs set to the connector and an intent naming what this skill does there shows access; tools listed only under `requestable_tools` need it. Offer request_tool_access for exactly those, and send it only on the user's yes.
+   - Elsewhere: make this skill's first read call on each connector and report the error it returns.
+   Required: google_calendar. Optional: notion, asana, jira, linear, hubspot or salesforce, gong, slack, gmail. Stop if google_calendar is not ready.
+2. Find 1:1s: google_calendar list_events for today (user's timezone), single_events=true.
    A 1:1 = not declined, exactly one other human attendee on the user's domain (ignore
    room resources), OR a title like "1:1", "1-1", "1v1", "<name> / <user>", "<name> + <user>".
    Prompt names a person -> take only that meeting. None today -> say "No 1:1s today" and stop.
-2. Label each 1:1's relationship: direct report, manager, or peer. Use what's knowable:
+3. Label each 1:1's relationship: direct report, manager, or peer. Use what's knowable:
    Slack/Google profile manager field if present; else signals (they organize the series
    AND the user's team meetings -> likely manager). Still unclear -> ask the user once,
    then reuse the answer. Never guess the org chart. Only brief 1:1s not yet started
    (if all are over, say so and offer "this week").
-3. Per person (cap 5 per run), in parallel, last 14 days, read-only:
+4. Per person (cap 5 per run), in parallel, last 14 days, read-only:
    - Work, across whatever is connected: Notion (search pages/databases they edited or
      are assigned/mentioned in), Asana (search_tasks assignee), Jira/Linear, CRM
      (Salesforce/HubSpot opps they own; Gong only for sales reps). Name sources that are
@@ -30,10 +34,10 @@ description: Before each 1:1 on the manager's calendar, a short brief on that pe
      (metadata/snippets only).
    - Manager 1:1: look at the USER's own work instead (their wins, blockers, open asks
      from the manager) and produce a "What to bring up" brief, not a report review.
-4. Pick the 3-5 items that matter most: blocked, overdue, slipping, waiting on the user,
+5. Pick the 3-5 items that matter most: blocked, overdue, slipping, waiting on the user,
    a decision needed, or a win worth naming. Drop routine noise.
-5. Write each item as What happened / Why it needs you / Move. Cite the source inline.
-6. Skip any source that is not connected or returns nothing; state the gap in one line.
+6. Write each item as What happened / Why it needs you / Move. Cite the source inline.
+7. Skip any source that is not connected or returns nothing; state the gap in one line.
 
 ## Output (chat, one block per 1:1, ordered by start time)
 ```

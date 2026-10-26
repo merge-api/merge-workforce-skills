@@ -12,14 +12,18 @@ description: "Triage a Sentry error alert, size its impact, reply in the alert's
 - Run inside a coding agent with a local checkout of the affected repo (Claude Code, Codex); the fix is written there.
 
 ## Steps
-1. Get the issue. From the alert message or link, find the get-issue tool on the sentry connector and pull: title, culprit, stack trace (in-app frames), event count, users affected, first seen, last seen, release, and environment.
-2. Check for existing work. Search the repo's open PRs (github connector or local `gh`) for the Sentry issue ID or short ID. If a PR already exists, link it in the thread and stop; do not open another.
-3. Write the impact summary: what breaks for the user, how many users and events, first and last seen, whether it started with a specific release, and whether it is still firing. Use counts exactly as Sentry reports them.
-4. Reply in the alert's Slack thread with the summary, using the slack connector's post-message tool with the alert's thread timestamp. In an interactive run, show the reply first and post on confirmation.
-5. Locate the code. Map the top in-app frames to files in the local checkout. If no frame maps to the repo, or the cause is outside the code (config, infra, a third-party outage), say so in the thread and stop with no fix attempted.
-6. Draft the smallest fix that addresses the root cause shown in the trace. Add or update a test that reproduces the failure when the repo has a test suite, and run it.
-7. Open a draft PR on a new branch: title naming the error, body with the impact summary, root cause, the change, test results, and a link to the Sentry issue. The PR stays a draft for a human to review and merge.
-8. Post the PR link in the alert thread.
+1. Check connections first. For each connector below, confirm it is signed in and that the tools this skill needs are available; access can be granted per tool, so a signed-in connector can still be missing one. Tell the user which connectors need sign-in or an access request and what that rules out, then continue with the ready ones.
+   - On Agent Handler: validate_credential shows sign-in; a reauth_required error names the authenticate tool to give the user. search_tools with connector_slugs set to the connector and an intent naming what this skill does there shows access; tools listed only under `requestable_tools` need it. Offer request_tool_access for exactly those, and send it only on the user's yes.
+   - Elsewhere: make this skill's first read call on each connector and report the error it returns.
+   Required: sentry; slack; github. Optional: none. Stop if sentry is not ready. Without slack, put the impact summary in chat; without github, search open PRs with local `gh`.
+2. Get the issue. From the alert message or link, find the get-issue tool on the sentry connector and pull: title, culprit, stack trace (in-app frames), event count, users affected, first seen, last seen, release, and environment.
+3. Check for existing work. Search the repo's open PRs (github connector or local `gh`) for the Sentry issue ID or short ID. If a PR already exists, link it in the thread and stop; do not open another.
+4. Write the impact summary: what breaks for the user, how many users and events, first and last seen, whether it started with a specific release, and whether it is still firing. Use counts exactly as Sentry reports them.
+5. Reply in the alert's Slack thread with the summary, using the slack connector's post-message tool with the alert's thread timestamp. In an interactive run, show the reply first and post on confirmation.
+6. Locate the code. Map the top in-app frames to files in the local checkout. If no frame maps to the repo, or the cause is outside the code (config, infra, a third-party outage), say so in the thread and stop with no fix attempted.
+7. Draft the smallest fix that addresses the root cause shown in the trace. Add or update a test that reproduces the failure when the repo has a test suite, and run it.
+8. Open a draft PR on a new branch: title naming the error, body with the impact summary, root cause, the change, test results, and a link to the Sentry issue. The PR stays a draft for a human to review and merge.
+9. Post the PR link in the alert thread.
 
 ## Output
 - Thread reply: impact summary with Sentry's numbers, plus the draft PR link or the reason no fix was attempted.

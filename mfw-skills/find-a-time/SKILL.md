@@ -12,14 +12,18 @@ description: "Find open slots, schedule across attendees, resolve conflicts, and
 - User wants a self-serve booking link instead of a fixed time.
 
 ## Steps
-1. Gather requirements: attendees (emails), duration, date range, and any constraints (mornings only, avoid Fridays, time zones). Ask for missing attendee emails; never guess them.
-2. Check availability: find the free-busy query tool on the google_calendar (or outlook) connector for all attendees over the range. If an attendee's calendar is not visible, say so and fall back to proposing times from the user's own availability.
-3. Compute 2 to 4 candidate slots that fit everyone, respecting each attendee's working hours and time zone. Present them ranked and let the user pick.
-4. On the user's pick, confirm the full invite before creating: title, time with time zone, attendees, location or conference link, and description. Then find the create-event tool on the calendar connector and book it with invites.
-5. For conflicts: find the list-events tool, show the overlapping events side by side, and propose which to move based on attendee count and organizer. Move or decline an event only after the user confirms which one and to where; use the update-event tool.
-6. For "send them a booking link": find the list-event-types tool on the calendly connector, pick the matching event type, and give the user the link to share. Create new event types only on request.
-7. If no common slot exists in the range, present the two least-bad options and name exactly who would need to move what.
-8. After booking, report the event link and note anyone whose availability was assumed rather than verified.
+1. Check connections first. For each connector below, confirm it is signed in and that the tools this skill needs are available; access can be granted per tool, so a signed-in connector can still be missing one. Tell the user which connectors need sign-in or an access request and what that rules out, then continue with the ready ones.
+   - On Agent Handler: validate_credential shows sign-in; a reauth_required error names the authenticate tool to give the user. search_tools with connector_slugs set to the connector and an intent naming what this skill does there shows access; tools listed only under `requestable_tools` need it. Offer request_tool_access for exactly those, and send it only on the user's yes.
+   - Elsewhere: make this skill's first read call on each connector and report the error it returns.
+   Required: google_calendar or outlook. Optional: calendly. Stop if no calendar is ready.
+2. Gather requirements: attendees (emails), duration, date range, and any constraints (mornings only, avoid Fridays, time zones). Ask for missing attendee emails; never guess them.
+3. Check availability: find the free-busy query tool on the google_calendar (or outlook) connector for all attendees over the range. If an attendee's calendar is not visible, say so and fall back to proposing times from the user's own availability.
+4. Compute 2 to 4 candidate slots that fit everyone, respecting each attendee's working hours and time zone. Present them ranked and let the user pick.
+5. On the user's pick, confirm the full invite before creating: title, time with time zone, attendees, location or conference link, and description. Then find the create-event tool on the calendar connector and book it with invites.
+6. For conflicts: find the list-events tool, show the overlapping events side by side, and propose which to move based on attendee count and organizer. Move or decline an event only after the user confirms which one and to where; use the update-event tool.
+7. For "send them a booking link": find the list-event-types tool on the calendly connector, pick the matching event type, and give the user the link to share. Create new event types only on request.
+8. If no common slot exists in the range, present the two least-bad options and name exactly who would need to move what.
+9. After booking, report the event link and note anyone whose availability was assumed rather than verified.
 
 ## Output
 - Candidate slots as a short list with day, date, time, and time zone per attendee when zones differ.

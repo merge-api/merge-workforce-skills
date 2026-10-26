@@ -12,18 +12,22 @@ description: "Audit open CRM opportunities for missing required fields, stale de
 - User asks which reps carry the most hygiene issues.
 
 ## Steps
-1. Confirm the CRM (salesforce or hubspot) and the scope: whole pipeline, a team, an owner, or a close-date window. Default to all open opportunities and say so.
-2. Get the rules. Ask once which fields are required at each stage, using the CRM's own field names; offer the stage list from the CRM so the user only fills in fields. Reuse the answer for the rest of the session. Use only the fields the user named.
-3. Pull open opportunities: find the search-opportunities tool (salesforce) or search_deals (hubspot) and fetch stage, amount, close date, owner, last activity date, and the required fields. Cap at 200 records; if the scope holds more, say how many were covered and offer the next batch.
-4. Flag three kinds of issue per record:
+1. Check connections first. For each connector below, confirm it is signed in and that the tools this skill needs are available; access can be granted per tool, so a signed-in connector can still be missing one. Tell the user which connectors need sign-in or an access request and what that rules out, then continue with the ready ones.
+   - On Agent Handler: validate_credential shows sign-in; a reauth_required error names the authenticate tool to give the user. search_tools with connector_slugs set to the connector and an intent naming what this skill does there shows access; tools listed only under `requestable_tools` need it. Offer request_tool_access for exactly those, and send it only on the user's yes.
+   - Elsewhere: make this skill's first read call on each connector and report the error it returns.
+   Required: hubspot or salesforce; slack. Optional: none. Stop if no CRM is ready. Without slack, show the issues table and drafts but post nothing.
+2. Confirm the CRM (salesforce or hubspot) and the scope: whole pipeline, a team, an owner, or a close-date window. Default to all open opportunities and say so.
+3. Get the rules. Ask once which fields are required at each stage, using the CRM's own field names; offer the stage list from the CRM so the user only fills in fields. Reuse the answer for the rest of the session. Use only the fields the user named.
+4. Pull open opportunities: find the search-opportunities tool (salesforce) or search_deals (hubspot) and fetch stage, amount, close date, owner, last activity date, and the required fields. Cap at 200 records; if the scope holds more, say how many were covered and offer the next batch.
+5. Flag three kinds of issue per record:
    - Missing: a field required at the record's current stage is empty.
    - Stale: close date in the past while still open, or no activity in 30 days (or the user's threshold).
    - Contradiction: fields that disagree, such as a late stage with no amount, or a next-step date before today.
    Record how long each issue has been true where the CRM shows it (close date passed on, last activity on).
-5. Group issues by owner. Resolve each owner to a Slack user with the slack connector's lookup-user-by-email tool. Owners with no match go on a separate list for the user.
-6. Draft one Slack message per owner listing every record they need to fix, with record links and the specific issue for each.
-7. Present the issues table, the drafts, and the delivery target (DM or a named channel). Post only after the user confirms recipients and text, using the slack post-message tool.
-8. Report what was posted and to whom.
+6. Group issues by owner. Resolve each owner to a Slack user with the slack connector's lookup-user-by-email tool. Owners with no match go on a separate list for the user.
+7. Draft one Slack message per owner listing every record they need to fix, with record links and the specific issue for each.
+8. Present the issues table, the drafts, and the delivery target (DM or a named channel). Post only after the user confirms recipients and text, using the slack post-message tool.
+9. Report what was posted and to whom.
 
 ## Output
 - Issues table sorted by owner: record (linked), owner, issue type, field or detail, how long it has been wrong.

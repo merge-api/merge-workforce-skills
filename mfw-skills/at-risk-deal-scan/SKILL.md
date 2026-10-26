@@ -12,15 +12,19 @@ description: "Cross-references call sentiment, support issues, and engagement to
 - User asks whether support problems are quietly undermining an active deal.
 
 ## Steps
-1. Scope the deal set. On the CRM in use, find the deals search tool (search_deals on hubspot, search_opportunities on salesforce) and pull open deals with stage, amount, close date, owner, and associated contacts and company. Cap the sweep at 50 deals; for one named deal, go deep instead.
-2. Engagement signals from the CRM: last activity date, unanswered emails, meetings canceled or not rebooked, single-threaded deals (only one contact associated).
-3. Call signals. On gong, use search_calls_extensive filtered by the account for calls in the last 45 days; from get_call briefs note competitor mentions, pricing pushback, missing decision makers, and shrinking call frequency. Pull a transcript only for a deal the user is drilling into.
-4. Support signals. On pylon, use search_accounts to match the company, then search_issues for open or recently escalated issues; a stack of unresolved tickets during a sales cycle is a strong risk marker.
-5. Score each deal:
+1. Check connections first. For each connector below, confirm it is signed in and that the tools this skill needs are available; access can be granted per tool, so a signed-in connector can still be missing one. Tell the user which connectors need sign-in or an access request and what that rules out, then continue with the ready ones.
+   - On Agent Handler: validate_credential shows sign-in; a reauth_required error names the authenticate tool to give the user. search_tools with connector_slugs set to the connector and an intent naming what this skill does there shows access; tools listed only under `requestable_tools` need it. Offer request_tool_access for exactly those, and send it only on the user's yes.
+   - Elsewhere: make this skill's first read call on each connector and report the error it returns.
+   Required: hubspot or salesforce; gong. Optional: pylon. Stop if neither a CRM nor gong is ready. Without a CRM, say the deal list is limited to deals that appear on gong calls.
+2. Scope the deal set. On the CRM in use, find the deals search tool (search_deals on hubspot, search_opportunities on salesforce) and pull open deals with stage, amount, close date, owner, and associated contacts and company. Cap the sweep at 50 deals; for one named deal, go deep instead.
+3. Engagement signals from the CRM: last activity date, unanswered emails, meetings canceled or not rebooked, single-threaded deals (only one contact associated).
+4. Call signals. On gong, use search_calls_extensive filtered by the account for calls in the last 45 days; from get_call briefs note competitor mentions, pricing pushback, missing decision makers, and shrinking call frequency. Pull a transcript only for a deal the user is drilling into.
+5. Support signals. On pylon, use search_accounts to match the company, then search_issues for open or recently escalated issues; a stack of unresolved tickets during a sales cycle is a strong risk marker.
+6. Score each deal:
    - Record what, where, and when for every signal found.
    - Rate risk high, medium, or low from the count and severity of concrete signals, never from vibes.
    - Deals with no data are "unknown", not "low".
-6. Present the report. Read-only by default; if the user wants follow-up tasks created for owners, confirm the exact tasks first, then use the CRM's create-task tool.
+7. Present the report. Read-only by default; if the user wants follow-up tasks created for owners, confirm the exact tasks first, then use the CRM's create-task tool.
 
 ## Output
 - Ranked list, highest risk first: deal, amount, close date, owner, risk level.
