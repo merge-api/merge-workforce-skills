@@ -12,10 +12,13 @@ description: "Put an account's contract history next to its actual usage and cal
 - User wants a sweep of renewals in the next quarter, one brief each.
 
 ## Steps
-1. Check connections first. For each connector below, run its validate_credential tool, and run Agent Handler search_tools with connector_slugs set to it and an intent naming what this skill does there (for example "search open deals", "create a note"). Access is granted per tool, and a connector's tools can show up in search before anyone has signed in, so sort by both results:
-   - Needs sign-in: validate_credential fails (for example reauth_required). Give the user the authenticate tool the error names, such as authenticate_salesforce.
-   - Needs access: a tool this skill needs comes back only under `requestable_tools`. Offer to request exactly those tools with request_tool_access, and send the request only on the user's yes.
-   - Ready: validate_credential succeeds and the tools this skill needs come back under `tools`.
+1. Check connections first. For each connector below, confirm it is signed in and that you can use the tools this skill needs there. Access can be granted per tool, so check the tools, not just the connector. Sort each one:
+   - Needs sign-in: tell the user how to connect it.
+   - Needs access: name the tools that are missing and how to get them.
+   - Ready: carry on.
+   How to check:
+   - On Agent Handler: run the connector's validate_credential tool; a reauth_required error names the authenticate tool to give the user. Then run search_tools with connector_slugs set to the connector and an intent naming what this skill does there. Tools listed only under `requestable_tools` need access: offer to request exactly those with request_tool_access, and send the request only on the user's yes.
+   - Elsewhere: use your setup's connection status if it has one; otherwise make this skill's first read call on each connector and sort by the error it returns.
    Open the reply with one line per connector that isn't ready and what that rules out, then continue with the ready ones.
    Required: hubspot or salesforce; google_drive or notion; the usage source. Optional: pylon. Stop if neither a CRM nor a contract store is ready. If the usage source is not ready, give the contract timeline and say usage is missing.
 2. Find the account. On the CRM (salesforce or hubspot), find the search-accounts tool and match the account the user named; confirm if more than one matches. Pull renewal date, current products, contracted quantities, ARR, and owner, plus open renewal or expansion opportunities.
