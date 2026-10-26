@@ -18,7 +18,13 @@ description: "Cross-references call sentiment, support issues, and engagement to
    Required: hubspot or salesforce; gong. Optional: pylon. Stop if neither a CRM nor gong is ready. Without a CRM, say the deal list is limited to deals that appear on gong calls.
 2. Scope the deal set. On the CRM in use, find the deals search tool (search_deals on hubspot, search_opportunities on salesforce) and pull open deals with stage, amount, close date, owner, and associated contacts and company. Cap the sweep at 50 deals; for one named deal, go deep instead.
 3. Engagement signals from the CRM: last activity date, unanswered emails, meetings canceled or not rebooked, single-threaded deals (only one contact associated).
-4. Call signals. On gong, use search_calls_extensive filtered by the account for calls in the last 45 days; from get_call briefs note competitor mentions, pricing pushback, missing decision makers, and shrinking call frequency. Pull a transcript only for a deal the user is drilling into.
+4. Call signals. Gong can't filter calls by account, so pull the deal owners' calls and match them to deals:
+   - Map each deal owner to a Gong user by email with list_users. Owners with no Gong user get no call signals; say so rather than counting it as low risk.
+   - Run search_calls_extensive with primaryUserIds set to those users, fromDateTime and toDateTime covering the last 45 days, contentSelector context "Extended", and exposedFields parties=true. Page through with the cursor. This returns calls the owners hosted; say that calls hosted by someone else on the deal are not covered.
+   - Match each call to a deal from step 2 by the Opportunity or Account ID in its Salesforce context, or by an external party's email domain matching the deal's company domain (the route for hubspot deals). Ignore calls that match no deal in the set.
+   - Note shrinking call frequency from the dates of all matched calls per deal, and missing decision makers from the external attendees' titles in parties.
+   - For the latest 3 matched calls per deal, get the briefs: run search_calls_extensive with those callIds, batched into one request, and exposedFields content.brief=true. From the briefs, note competitor mentions and pricing pushback.
+   - Pull a transcript with get_call_transcript only for a deal the user is drilling into.
 5. Support signals. On pylon, use search_accounts to match the company, then search_issues for open or recently escalated issues; a stack of unresolved tickets during a sales cycle is a strong risk marker.
 6. Score each deal:
    - Record what, where, and when for every signal found.
