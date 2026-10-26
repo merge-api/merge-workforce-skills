@@ -1,0 +1,36 @@
+---
+name: meeting-prep-brief
+description: "Build a pre-meeting brief from a calendar event: attendees, last interactions, open threads, and talking points. Use when the meeting can be found on the calendar, as in 'prep me for my next meeting', 'brief me on the 2pm call', or a sweep of the coming days' external meetings. When the user names an account instead and there is no event to look up, use call-prep-one-pager instead."
+---
+
+# meeting-prep-brief
+
+## When to use
+- User asks to be prepped for an upcoming meeting.
+- User wants background on the people or company they are about to meet.
+- User asks "what's the state of things with X" right before a call.
+- User wants a prep pack covering all external meetings in the coming days.
+- Not this skill: a named account with no calendar event behind it. That is call-prep-one-pager. The boundary is where the attendee list comes from: google_calendar here, the user's own words there.
+
+## Steps
+1. Locate the meeting: find the list-events tool on the google_calendar connector. If the user said "next meeting", take the next event with external attendees; otherwise match by title or time. Confirm if ambiguous.
+2. Extract attendees and their domains. Internal attendees need only names; external ones drive the research below.
+3. In parallel, gather per external attendee and their company:
+   - CRM state: find the search-contacts and search-companies tools on the hubspot or salesforce connector (whichever holds the account; try the user's primary CRM first). Pull open deals, lifecycle stage, and owner.
+   - Recent conversations: find the search-calls tool on the gong connector and the notes-lookup tool on the granola connector for calls with these people in the last 90 days; pull only the latest 2 or 3 summaries, not transcripts.
+   - Email threads: find the search-threads tool on the gmail connector for recent exchanges between the user and the attendees; note open asks and who owes a reply.
+   - Role context: find the person-lookup tool on the linkedin connector for title and tenure if the CRM lacks them.
+4. Skip any source that is not connected rather than failing the brief; note the gap.
+5. Synthesize into a brief: who they are, where the relationship stands, what happened last, what is open, and 3 to 5 suggested talking points grounded in the material above.
+
+## Output
+- One brief per meeting: meeting title and time; attendee bios (name, title, company); relationship state (deal stage, owner); last interaction summary with date and source; open threads and owed replies; suggested talking points.
+- Every claim cites its source system inline (CRM, gong, gmail).
+- Gaps stated explicitly ("no CRM record for X").
+- Multiple meetings ordered by start time, one brief each, capped at 5 per run.
+
+## Anti-patterns
+- Do not pull full call transcripts or whole mailbox history; latest summaries and matching threads only.
+- Do not invent bios or company facts when sources are empty; say the data is missing.
+- Do not write anything to the CRM or send any mail; this skill is read-only.
+- Do not brief on internal attendees' emails or calls; research scope is the external party.
