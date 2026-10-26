@@ -12,14 +12,9 @@ description: "Summarizes a sales call, logs it to the CRM, and drafts the follow
 - User asks for the follow-up email drafted from what was actually discussed.
 
 ## Steps
-1. Check connections first. For each connector below, confirm it is signed in and that you can use the tools this skill needs there. Access can be granted per tool, so check the tools, not just the connector. Sort each one:
-   - Needs sign-in: tell the user how to connect it.
-   - Needs access: name the tools that are missing and how to get them.
-   - Ready: carry on.
-   How to check:
-   - On Agent Handler: run the connector's validate_credential tool; a reauth_required error names the authenticate tool to give the user. Then run search_tools with connector_slugs set to the connector and an intent naming what this skill does there. Tools listed only under `requestable_tools` need access: offer to request exactly those with request_tool_access, and send the request only on the user's yes.
-   - Elsewhere: use your setup's connection status if it has one; otherwise make this skill's first read call on each connector and sort by the error it returns.
-   Open the reply with one line per connector that isn't ready and what that rules out, then continue with the ready ones.
+1. Check connections first. For each connector below, confirm it is signed in and that the tools this skill needs are available; access can be granted per tool, so a signed-in connector can still be missing one. Tell the user which connectors need sign-in or an access request and what that rules out, then continue with the ready ones.
+   - On Agent Handler: validate_credential shows sign-in; a reauth_required error names the authenticate tool to give the user. search_tools with connector_slugs set to the connector and an intent naming what this skill does there shows access; tools listed only under `requestable_tools` need it. Offer request_tool_access for exactly those, and send it only on the user's yes.
+   - Elsewhere: make this skill's first read call on each connector and report the error it returns.
    Required: one recording source (gong, fireflies, granola, or plaud). Optional: hubspot or salesforce, gmail. Stop only if no recording source is ready. Without a CRM, preview the note and tasks marked "can't run"; without gmail, show the email text in chat.
 2. Find the call. Check the recording source the user names; otherwise try gong first (get_calls filtered to the user and date, then get_call), falling back to the list-recordings tool on fireflies, granola, or plaud. If several calls match, list them and ask.
 3. Get the content. Prefer the source's AI summary or brief; pull the full transcript only when the summary lacks decisions, numbers, or owners you need.
