@@ -12,14 +12,20 @@ description: "Morning digest of unread messages, today's calendar, and assigned 
 - User asks for an end-of-day wrap; same shape with the window flipped to today.
 
 ## Steps
-1. Set the window: since the user's last briefing or yesterday evening by default; for "back from vacation", ask the start date. All fetches below share this window and run in parallel.
-2. Chat: find the unread-messages tools on the slack connector (unread DMs and unread channel messages). Summarize per conversation; pull only messages in the window, capped at 15 conversations.
-3. Mail: find the list-messages tool on the gmail connector, filtered to unread in the window, capped at 30. Classify into needs-reply versus FYI from metadata and snippets; open full bodies only when a snippet is not enough to classify.
-4. Calendar: find the list-events tool on the google_calendar connector for today. Note the first event time, gaps, and any event with external attendees.
-5. Tasks: find the list-assigned-tasks or my-issues tools on the asana and linear connectors. Surface items due today or overdue, plus anything newly assigned in the window.
-6. Rank across sources: direct asks of the user first (DMs and needs-reply mail), then today's meetings needing prep, then due or overdue tasks, then FYI items. Flag collisions, such as a due task with no free calendar slot.
-7. If a source is disconnected or errors, skip it and note the gap rather than failing the whole briefing.
-8. Keep it read-only. If the user asks to act on an item (reply, reschedule, complete a task), hand that to the matching skill or tool flow with its own confirmation.
+1. Check connections first. For each connector below, run its validate_credential tool, and run Agent Handler search_tools with connector_slugs set to it and an intent naming what this skill does there (for example "search open deals", "create a note"). Access is granted per tool, and a connector's tools can show up in search before anyone has signed in, so sort by both results:
+   - Needs sign-in: validate_credential fails (for example reauth_required). Give the user the authenticate tool the error names, such as authenticate_salesforce.
+   - Needs access: a tool this skill needs comes back only under `requestable_tools`. Offer to request exactly those tools with request_tool_access, and send the request only on the user's yes.
+   - Ready: validate_credential succeeds and the tools this skill needs come back under `tools`.
+   Open the reply with one line per connector that isn't ready and what that rules out, then continue with the ready ones.
+   Required: slack, gmail, google_calendar. Optional: asana, linear. Stop only if slack, gmail, and google_calendar are all not ready.
+2. Set the window: since the user's last briefing or yesterday evening by default; for "back from vacation", ask the start date. All fetches below share this window and run in parallel.
+3. Chat: find the unread-messages tools on the slack connector (unread DMs and unread channel messages). Summarize per conversation; pull only messages in the window, capped at 15 conversations.
+4. Mail: find the list-messages tool on the gmail connector, filtered to unread in the window, capped at 30. Classify into needs-reply versus FYI from metadata and snippets; open full bodies only when a snippet is not enough to classify.
+5. Calendar: find the list-events tool on the google_calendar connector for today. Note the first event time, gaps, and any event with external attendees.
+6. Tasks: find the list-assigned-tasks or my-issues tools on the asana and linear connectors. Surface items due today or overdue, plus anything newly assigned in the window.
+7. Rank across sources: direct asks of the user first (DMs and needs-reply mail), then today's meetings needing prep, then due or overdue tasks, then FYI items. Flag collisions, such as a due task with no free calendar slot.
+8. If a source is disconnected or errors, skip it and note the gap rather than failing the whole briefing.
+9. Keep it read-only. If the user asks to act on an item (reply, reschedule, complete a task), hand that to the matching skill or tool flow with its own confirmation.
 
 ## Output
 - A briefing in four short sections: Needs you (direct asks with source links), Today's calendar (times and one-line context), Work due (task, tracker, due date), FYI (two-line max each).

@@ -13,15 +13,21 @@ description: "Build a pre-meeting brief from a calendar event: attendees, last i
 - Not this skill: a named account with no calendar event behind it. That is call-prep-one-pager. The boundary is where the attendee list comes from: google_calendar here, the user's own words there.
 
 ## Steps
-1. Locate the meeting: find the list-events tool on the google_calendar connector. If the user said "next meeting", take the next event with external attendees; otherwise match by title or time. Confirm if ambiguous.
-2. Extract attendees and their domains. Internal attendees need only names; external ones drive the research below.
-3. In parallel, gather per external attendee and their company:
+1. Check connections first. For each connector below, run its validate_credential tool, and run Agent Handler search_tools with connector_slugs set to it and an intent naming what this skill does there (for example "search open deals", "create a note"). Access is granted per tool, and a connector's tools can show up in search before anyone has signed in, so sort by both results:
+   - Needs sign-in: validate_credential fails (for example reauth_required). Give the user the authenticate tool the error names, such as authenticate_salesforce.
+   - Needs access: a tool this skill needs comes back only under `requestable_tools`. Offer to request exactly those tools with request_tool_access, and send the request only on the user's yes.
+   - Ready: validate_credential succeeds and the tools this skill needs come back under `tools`.
+   Open the reply with one line per connector that isn't ready and what that rules out, then continue with the ready ones.
+   Required: google_calendar. Optional: hubspot or salesforce, gong, granola, gmail, linkedin. Stop if google_calendar is not ready; without it there is no meeting to brief.
+2. Locate the meeting: find the list-events tool on the google_calendar connector. If the user said "next meeting", take the next event with external attendees; otherwise match by title or time. Confirm if ambiguous.
+3. Extract attendees and their domains. Internal attendees need only names; external ones drive the research below.
+4. In parallel, gather per external attendee and their company:
    - CRM state: find the search-contacts and search-companies tools on the hubspot or salesforce connector (whichever holds the account; try the user's primary CRM first). Pull open deals, lifecycle stage, and owner.
    - Recent conversations: find the search-calls tool on the gong connector and the notes-lookup tool on the granola connector for calls with these people in the last 90 days; pull only the latest 2 or 3 summaries, not transcripts.
    - Email threads: find the search-threads tool on the gmail connector for recent exchanges between the user and the attendees; note open asks and who owes a reply.
    - Role context: find the person-lookup tool on the linkedin connector for title and tenure if the CRM lacks them.
-4. Skip any source that is not connected rather than failing the brief; note the gap.
-5. Synthesize into a brief: who they are, where the relationship stands, what happened last, what is open, and 3 to 5 suggested talking points grounded in the material above.
+5. Skip any source that is not connected rather than failing the brief; note the gap.
+6. Synthesize into a brief: who they are, where the relationship stands, what happened last, what is open, and 3 to 5 suggested talking points grounded in the material above.
 
 ## Output
 - One brief per meeting: meeting title and time; attendee bios (name, title, company); relationship state (deal stage, owner); last interaction summary with date and source; open threads and owed replies; suggested talking points.
