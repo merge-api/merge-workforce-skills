@@ -22,7 +22,10 @@ function load(slug: string): Skill {
   };
   if (field("name") !== slug) throw new Error(`${slug}: frontmatter name is "${field("name")}"`);
   const description = field("description");
-  if (!description) throw new Error(`${slug}: frontmatter has no description`);
+  // Only one-line values are read; a YAML block scalar (> or |) would export as its marker.
+  if (!description || /^[>|]/.test(description)) {
+    throw new Error(`${slug}: frontmatter needs a one-line description`);
+  }
 
   const body = text.slice(frontmatter[0].length).trim();
   const lines = body.split("\n");
