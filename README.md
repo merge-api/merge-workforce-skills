@@ -4,19 +4,42 @@ Twenty skills for everyday work across the tools a company already runs on: brie
 
 They're written for [Merge Agent Handler](https://www.merge.dev/agent-handler). One Agent Handler connection gives your agent every connector a skill needs, with access granted tool by tool and every call logged. The skills also run on other setups that have the same connectors; the first step of each one explains how to check access either way.
 
-## Set up Agent Handler
+## Copy a prompt
 
-1. In the Agent Handler dashboard, create a Tool Pack with the connectors the skills you want use (see the table below), and a Registered User for the person running them.
-2. Create an access key for the same environment as the user (test keys with test users, production keys with production users).
-3. Add Agent Handler to your AI tool as an MCP server. The URL is `https://ah-api.merge.dev/api/v1/tool-packs/<TOOL_PACK_ID>/registered-users/<REGISTERED_USER_ID>/mcp`, with the access key as a Bearer token in the `Authorization` header.
+Every skill is also a prompt you can paste into any agent, in a chat app or in Claude Code. The prompt is the skill's `SKILL.md` without its YAML header, plus one line telling the agent to run it. Print one and copy it:
 
-Client-by-client config for Claude Desktop, Cursor, Windsurf and VS Code is in Merge's [connect MCP guide](https://docs.merge.dev/get-started/connect-mcp). When a connector isn't signed in or a tool needs an access request, the skill says so before it starts and names the step to fix it.
+```bash
+bun scripts/prompts.ts morning-plan | pbcopy
+```
 
-## Add a skill
+`node scripts/prompts.ts` works the same on Node 22.18 or later. Run it with no skill name to list them all.
 
-Each folder in `mfw-skills/` is one skill.
+Pasting a prompt doesn't install anything or grant any access. The prompt's first step checks what the agent can already reach, in this order: Agent Handler tools connected over MCP, the Merge CLI if the agent can run shell commands, then any other tools it has for the same apps. If none of those are there, the agent explains how to connect for the client it's running in and waits for you to sign in. A chat app can't run terminal commands, so skills that need a code checkout, such as Alert triage to fix PR, say when the work has to move to a coding agent.
 
-- **Claude Code:** copy the folder into `~/.claude/skills/` (all projects) or `.claude/skills/` in a repo.
+For a website or another build, write every prompt to one JSON file of `slug`, `description` and `prompt`:
+
+```bash
+bun scripts/prompts.ts --out dist
+```
+
+`dist/` is build output and is ignored by git. To change a prompt, edit the skill's `SKILL.md` and rebuild. The script fails if a skill is missing its header or if one skill's connection step has drifted from the others.
+
+## Connect Agent Handler
+
+The prompts use whichever of these you have.
+
+- **Your company uses Agent Handler for employees:** connect your AI client to `https://ah-api.merge.dev/mcp` and sign in through SSO. In Claude Code, run `claude mcp add --transport http agent-handler https://ah-api.merge.dev/mcp`, then `/mcp` to sign in. In Claude on the web or desktop, an org admin adds the URL as a custom connector, then each person connects it under [Connectors](https://claude.ai/customize/connectors). Other clients, and the admin setup, are in Merge's [Agent Handler for Employees guide](https://docs.merge.dev/merge-agent-handler/setup/agent-handler-for-employees).
+- **A terminal agent:** install the [Merge CLI](https://docs.merge.dev/merge-agent-handler/build/cli/merge-cli) with `pipx install merge-api` and sign in with `merge login`. The agent finds tools with `merge search-tools` and runs them with `merge execute-tool`.
+- **You're building with your own Tool Pack:** in the Agent Handler dashboard, create a Tool Pack with the connectors the skills you want use (see the table below), and a Registered User for the person running them. Create an access key for the same environment as the user (test keys with test users, production keys with production users). Then add Agent Handler to your AI tool as an MCP server at `https://ah-api.merge.dev/api/v1/tool-packs/<TOOL_PACK_ID>/registered-users/<REGISTERED_USER_ID>/mcp`, with the access key as a Bearer token in the `Authorization` header. Client-by-client config is in Merge's [MCP integration guide](https://docs.merge.dev/merge-agent-handler/build/connecting-agents/mcp-integration). Keep the key in your client config; don't paste it into a prompt.
+
+When a connector isn't signed in or a tool needs an access request, the skill says so before it starts and names the step to fix it.
+
+## Install a skill
+
+To keep a skill around instead of pasting it each time, install it. Each folder in `mfw-skills/` is one skill.
+
+- **Any agent the [skills CLI](https://github.com/vercel-labs/skills) supports, Claude Code included:** `npx skills add MatthewFeroz/mfw-skills --skill morning-plan`. `npx skills use MatthewFeroz/mfw-skills@morning-plan | claude` runs one skill once without installing it. Both read this repo from GitHub, and while it's private they only work for people with access to it.
+- **Claude Code by hand:** copy the folder into `~/.claude/skills/` (all projects) or `.claude/skills/` in a repo.
 - **Claude apps:** zip the folder and upload it under Settings → Capabilities → Skills.
 
 ## The skills
