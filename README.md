@@ -38,7 +38,7 @@ When a connector isn't signed in or a tool needs an access request, the skill sa
 
 To keep a skill around instead of pasting it each time, install it. Each folder in `mfw-skills/` is one skill.
 
-- **Any agent the [skills CLI](https://github.com/vercel-labs/skills) supports, Claude Code included:** `npx skills add MatthewFeroz/mfw-skills --skill morning-plan`. `npx skills use MatthewFeroz/mfw-skills@morning-plan | claude` runs one skill once without installing it. Both read this repo from GitHub, and while it's private they only work for people with access to it.
+- **Any agent the [skills CLI](https://github.com/vercel-labs/skills) supports, Claude Code included:** `npx skills add merge-api/merge-workforce-skills --skill morning-plan`. `npx skills use merge-api/merge-workforce-skills@morning-plan | claude` runs one skill once without installing it. Both read this repo from GitHub, and while it's private they only work for people with access to it.
 - **Claude Code by hand:** copy the folder into `~/.claude/skills/` (all projects) or `.claude/skills/` in a repo.
 - **Claude apps:** zip the folder and upload it under Settings → Capabilities → Skills.
 
