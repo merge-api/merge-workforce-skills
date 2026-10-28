@@ -4,7 +4,13 @@ Twenty skills for everyday work across the tools a company already runs on: brie
 
 They're written for [Merge Agent Handler](https://www.merge.dev/agent-handler). One Agent Handler connection gives your agent every connector a skill needs, with access granted tool by tool and every call logged. The skills also run on other setups that have the same connectors; the first step of each one explains how to check access either way.
 
-## Copy a prompt
+## Get started: choose and set up workflows
+
+[`get-started.md`](get-started.md) is the higher-level onboarding prompt for the top of the website's use-cases page. Copy it when you want help choosing a workflow and getting connected. It asks about your role, connects Agent Handler, and recommends workflows for the apps you can use. It then reads the selected workflow's full instructions and follows them for the first run.
+
+The individual workflow prompts below each carry out one task, such as meeting prep or release notes. Visitors who already know which task they want can copy that workflow directly.
+
+## Copy an individual workflow prompt
 
 Every skill is also a prompt you can paste into any agent, in a chat app or in Claude Code. The prompt is the skill's `SKILL.md` without its YAML header, plus one line telling the agent to run it. Print one and copy it:
 
@@ -22,7 +28,9 @@ For a website or another build, write every prompt to one JSON file of `slug`, `
 bun scripts/prompts.ts --out dist
 ```
 
-`dist/` is build output and is ignored by git. To change a prompt, edit the skill's `SKILL.md` and rebuild. The script fails if a skill is missing its header or if one skill's connection step has drifted from the others.
+The same command copies the higher-level onboarding prompt to `dist/get-started.md`. It also generates `dist/use-cases/workforce-use-cases.md`, the list of individual workflows and their required apps, and `dist/use-cases/<skill>.md`, each workflow's full prompt. The website needs to serve `dist/use-cases/` at `https://merge.dev/workforce/use-cases/`, the address the onboarding prompt and the list link to. `prompts.json` contains only the individual workflow prompts; the onboarding prompt stays separate.
+
+`dist/` is build output and is ignored by git. Edit `get-started.md` to change the onboarding prompt, or a skill's `SKILL.md` to change an individual workflow, then rebuild. The script fails if a skill is missing its header or if one skill's connection step has drifted from the others.
 
 ## Connect Agent Handler
 
