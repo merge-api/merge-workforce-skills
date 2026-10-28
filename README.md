@@ -22,6 +22,8 @@ For a website or another build, write every prompt to one JSON file of `slug`, `
 bun scripts/prompts.ts --out dist
 ```
 
+The same command writes what the get-started prompt needs. [`get-started.md`](get-started.md) is the one prompt for the top of the use-cases page: the agent asks your role, connects Agent Handler (running `merge agent signup` if you have no account), recommends two or three workflows for the apps you have, and runs the first one. It reads `dist/use-cases/workforce-use-cases.md`, a list of every skill with the apps it needs, and each skill's prompt is beside it as `dist/use-cases/<skill>.md`. The website serves that folder at `https://merge.dev/workforce/use-cases/`, the address the prompt and the list link to.
+
 `dist/` is build output and is ignored by git. To change a prompt, edit the skill's `SKILL.md` and rebuild. The script fails if a skill is missing its header or if one skill's connection step has drifted from the others.
 
 ## Connect Agent Handler

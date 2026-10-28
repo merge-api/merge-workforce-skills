@@ -1,16 +1,26 @@
 // Builds each skill's copyable prompt from its SKILL.md, which stays the only source.
 //   bun scripts/prompts.ts <skill>       print one prompt (pipe to pbcopy to copy it)
-//   bun scripts/prompts.ts --out <dir>   write <dir>/prompts.json for a website build
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+//   bun scripts/prompts.ts --out <dir>   write <dir>/prompts.json, the get-started prompt and
+//                                        <dir>/use-cases/ (the list it reads, one file per skill)
+import { copyFileSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const SKILLS_DIR = join(import.meta.dirname, "..", "mfw-skills");
+const GET_STARTED = join(import.meta.dirname, "..", "get-started.md");
+// Where the website serves <dir>/use-cases/; get-started.md links to the list there.
+const USE_CASES_URL = "https://merge.dev/workforce/use-cases/";
 
 // A pasted prompt arrives with no "Use when" trigger, so it says up front to run the workflow.
 const INTRO =
   "Use the workflow below for this conversation. Start at step 1, and ask me for anything it needs that I haven't given you, such as which meeting, account, or alert.\n\n";
 
-type Skill = { slug: string; description: string; prompt: string; connectionStep: string };
+type Skill = {
+  slug: string;
+  description: string;
+  prompt: string;
+  connectionStep: string;
+  apps: string;
+};
 
 function load(slug: string): Skill {
   const text = readFileSync(join(SKILLS_DIR, slug, "SKILL.md"), "utf8");
@@ -38,6 +48,12 @@ function load(slug: string): Skill {
     description,
     prompt: INTRO + body + "\n",
     connectionStep: lines.slice(start, end).join("\n"),
+    // "Required: ... Optional: ..." without the stop rules that follow.
+    apps: lines[end]
+      .trim()
+      .split(/(?<=\.) /)
+      .filter((sentence) => /^(Required|Optional):/.test(sentence))
+      .join(" "),
   };
 }
 
@@ -63,7 +79,21 @@ if (arg === "--out" && outDir) {
   mkdirSync(outDir, { recursive: true });
   const prompts = skills.map(({ slug, description, prompt }) => ({ slug, description, prompt }));
   writeFileSync(join(outDir, "prompts.json"), JSON.stringify(prompts, null, 2) + "\n");
-  console.error(`Wrote ${prompts.length} prompts to ${join(outDir, "prompts.json")}`);
+  copyFileSync(GET_STARTED, join(outDir, "get-started.md"));
+
+  const useCasesDir = join(outDir, "use-cases");
+  mkdirSync(useCasesDir, { recursive: true });
+  for (const { slug, prompt } of skills) writeFileSync(join(useCasesDir, `${slug}.md`), prompt);
+  const list = skills.map(
+    ({ slug, description, apps }) =>
+      `## ${slug}\n\n${description}\n\nApps: ${apps}\n\nFull workflow: ${USE_CASES_URL}${slug}.md\n`,
+  );
+  writeFileSync(
+    join(useCasesDir, "workforce-use-cases.md"),
+    "# Merge for Workforce use cases\n\nEach workflow runs on Merge Agent Handler. Apps lists the connectors it needs.\n\n" +
+      list.join("\n"),
+  );
+  console.error(`Wrote ${prompts.length} prompts, get-started.md and use-cases/ to ${outDir}`);
 } else {
   const skill = skills.find((s) => s.slug === arg);
   if (!skill) {
