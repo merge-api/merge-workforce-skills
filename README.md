@@ -18,7 +18,7 @@ Or install it as a skill so it's there next time:
 npx skills add merge-api/merge-workforce-skills --skill morning-plan
 ```
 
-While this repo is private, `npx skills` only works for people with access to it. You can also copy a folder from `mfw-skills/` into `~/.claude/skills/`, or zip it and upload it in the Claude apps under Settings → Capabilities → Skills.
+You can also copy a folder from `mfw-skills/` into `~/.claude/skills/`, or zip it and upload it in the Claude apps under Settings → Capabilities → Skills.
 
 ## Connect Agent Handler
 
