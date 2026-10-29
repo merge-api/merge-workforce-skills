@@ -1,54 +1,32 @@
-# MFW skills
+# Merge Workforce skills
 
-Twenty skills for everyday work across the tools a company already runs on: briefings, meeting prep, CRM follow-ups, PR nudges, ticket triage, and more. Each skill is a `SKILL.md` an AI agent follows step by step, and each one asks before it writes anything.
+Twenty ready-made workflows an AI agent runs across your company's apps: a morning briefing, meeting prep, CRM follow-ups, PR nudges, ticket triage and more. They connect through [Merge Agent Handler](https://www.merge.dev/agent-handler), and each one asks before it writes anything.
 
-They're written for [Merge Agent Handler](https://www.merge.dev/agent-handler). One Agent Handler connection gives your agent every connector a skill needs, with access granted tool by tool and every call logged. The skills also run on other setups that have the same connectors; the first step of each one explains how to check access either way.
+## Get started
 
-## Get started: choose and set up workflows
+Paste [`get-started.md`](get-started.md) into your AI agent. It asks about your role, connects you to Agent Handler, suggests workflows that fit the apps you can use, and runs the first one with you.
 
-[`get-started.md`](get-started.md) is the higher-level onboarding prompt for the top of the website's use-cases page. Copy it when you want help choosing a workflow and getting connected. It asks about your role, connects Agent Handler, and recommends workflows for the apps you can use. It then reads the selected workflow's full instructions and follows them for the first run.
-
-The individual workflow prompts below each carry out one task, such as meeting prep or release notes. Visitors who already know which task they want can copy that workflow directly.
-
-## Copy an individual workflow prompt
-
-Every skill is also a prompt you can paste into any agent, in a chat app or in Claude Code. The prompt is the skill's `SKILL.md` without its YAML header, plus one line telling the agent to run it. Print one and copy it:
+If you already know the workflow you want, copy its prompt and paste it into any agent:
 
 ```bash
 bun scripts/prompts.ts morning-plan | pbcopy
 ```
 
-`node scripts/prompts.ts` works the same on Node 22.18 or later. Run it with no skill name to list them all.
-
-Pasting a prompt doesn't install anything or grant any access. The prompt's first step checks what the agent can already reach, in this order: Agent Handler tools connected over MCP, the Merge CLI if the agent can run shell commands, then any other tools it has for the same apps. If none of those are there, the agent explains how to connect for the client it's running in and waits for you to sign in. A chat app can't run terminal commands, so skills that need a code checkout, such as Alert triage to fix PR, say when the work has to move to a coding agent.
-
-For a website or another build, write every prompt to one JSON file of `slug`, `description` and `prompt`:
+Or install it as a skill so it's there next time:
 
 ```bash
-bun scripts/prompts.ts --out dist
+npx skills add merge-api/merge-workforce-skills --skill morning-plan
 ```
 
-The same command copies the higher-level onboarding prompt to `dist/get-started.md`. It also generates `dist/use-cases/workforce-use-cases.md`, the list of individual workflows and their required apps, and `dist/use-cases/<skill>.md`, each workflow's full prompt. The website needs to serve `dist/use-cases/` at `https://merge.dev/workforce/use-cases/`, the address the onboarding prompt and the list link to. `prompts.json` contains only the individual workflow prompts; the onboarding prompt stays separate.
-
-`dist/` is build output and is ignored by git. Edit `get-started.md` to change the onboarding prompt, or a skill's `SKILL.md` to change an individual workflow, then rebuild. The script fails if a skill is missing its header or if one skill's connection step has drifted from the others.
+You can also copy a folder from `mfw-skills/` into `~/.claude/skills/`, or zip it and upload it in the Claude apps under Settings → Capabilities → Skills.
 
 ## Connect Agent Handler
 
-The prompts use whichever of these you have.
+Each workflow checks its access in step 1 and tells you what to connect if something's missing.
 
-- **Your company uses Agent Handler for employees:** connect your AI client to `https://ah-api.merge.dev/mcp` and sign in through SSO. In Claude Code, run `claude mcp add --transport http agent-handler https://ah-api.merge.dev/mcp`, then `/mcp` to sign in. In Claude on the web or desktop, an org admin adds the URL as a custom connector, then each person connects it under [Connectors](https://claude.ai/customize/connectors). Other clients, and the admin setup, are in Merge's [Agent Handler for Employees guide](https://docs.merge.dev/merge-agent-handler/setup/agent-handler-for-employees).
-- **A terminal agent:** install the [Merge CLI](https://docs.merge.dev/merge-agent-handler/build/cli/merge-cli) with `pipx install merge-api` and sign in with `merge login`. The agent finds tools with `merge search-tools` and runs them with `merge execute-tool`.
-- **You're building with your own Tool Pack:** in the Agent Handler dashboard, create a Tool Pack with the connectors the skills you want use (see the table below), and a Registered User for the person running them. Create an access key for the same environment as the user (test keys with test users, production keys with production users). Then add Agent Handler to your AI tool as an MCP server at `https://ah-api.merge.dev/api/v1/tool-packs/<TOOL_PACK_ID>/registered-users/<REGISTERED_USER_ID>/mcp`, with the access key as a Bearer token in the `Authorization` header. Client-by-client config is in Merge's [MCP integration guide](https://docs.merge.dev/merge-agent-handler/build/connecting-agents/mcp-integration). Keep the key in your client config; don't paste it into a prompt.
-
-When a connector isn't signed in or a tool needs an access request, the skill says so before it starts and names the step to fix it.
-
-## Install a skill
-
-To keep a skill around instead of pasting it each time, install it. Each folder in `mfw-skills/` is one skill.
-
-- **Any agent the [skills CLI](https://github.com/vercel-labs/skills) supports, Claude Code included:** `npx skills add merge-api/merge-workforce-skills --skill morning-plan`. `npx skills use merge-api/merge-workforce-skills@morning-plan | claude` runs one skill once without installing it. Both read this repo from GitHub, and while it's private they only work for people with access to it.
-- **Claude Code by hand:** copy the folder into `~/.claude/skills/` (all projects) or `.claude/skills/` in a repo.
-- **Claude apps:** zip the folder and upload it under Settings → Capabilities → Skills.
+- **Claude Code:** `claude mcp add --transport http agent-handler https://ah-api.merge.dev/mcp`, then `/mcp` to sign in.
+- **Other terminal agents:** `pipx install merge-api`, then `merge login`.
+- **Claude on the web, other clients, or your own Tool Pack:** see the [Agent Handler for Employees guide](https://docs.merge.dev/merge-agent-handler/setup/agent-handler-for-employees) and the [MCP integration guide](https://docs.merge.dev/merge-agent-handler/build/connecting-agents/mcp-integration).
 
 ## The skills
 
@@ -75,4 +53,4 @@ To keep a skill around instead of pasting it each time, install it. Each folder 
 | [Access request review](mfw-skills/access-request-review/SKILL.md) | Access requests checked against role and peers | ServiceNow or Jira Service Management, Okta |
 | [Vendor bill review](mfw-skills/vendor-bill-review/SKILL.md) | Bills due, overdue, and possible duplicates | NetSuite or QuickBooks Online |
 
-Each skill's first step lists its full required and optional connectors.
+Building the prompts for the website is covered in [`scripts/README.md`](scripts/README.md).
