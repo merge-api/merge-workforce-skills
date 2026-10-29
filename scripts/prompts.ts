@@ -7,8 +7,8 @@ import { join } from "node:path";
 
 const SKILLS_DIR = join(import.meta.dirname, "..", "mfw-skills");
 const GET_STARTED = join(import.meta.dirname, "..", "get-started.md");
-// Where the website serves <dir>/use-cases/; get-started.md links to the list there.
-const USE_CASES_URL = "https://merge.dev/workforce/use-cases/";
+// Public Webflow page paths; the generated Markdown supplies their content.
+const USE_CASES_URL = "https://www.merge.dev/ai-workflow-templates";
 
 // A pasted prompt arrives with no "Use when" trigger, so it says up front to run the workflow.
 const INTRO =
@@ -86,7 +86,7 @@ if (arg === "--out" && outDir) {
   for (const { slug, prompt } of skills) writeFileSync(join(useCasesDir, `${slug}.md`), prompt);
   const list = skills.map(
     ({ slug, description, apps }) =>
-      `## ${slug}\n\n${description}\n\nApps: ${apps}\n\nFull workflow: ${USE_CASES_URL}${slug}.md\n`,
+      `## ${slug}\n\n${description}\n\nApps: ${apps}\n\nFull workflow: ${USE_CASES_URL}/${slug}\n`,
   );
   writeFileSync(
     join(useCasesDir, "workforce-use-cases.md"),
