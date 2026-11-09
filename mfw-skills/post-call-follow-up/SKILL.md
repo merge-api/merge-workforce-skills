@@ -3,7 +3,7 @@ name: post-call-follow-up
 description: "Summarizes a sales call, logs it to the CRM, and drafts the follow-up email. Use when the user says 'write the follow-up for my Acme call', 'log this call', or 'what were the next steps from today's call'."
 ---
 
-# post-call-followup
+# post-call-follow-up
 
 ## When to use
 - A sales or customer call just happened and the user wants the follow-up handled.

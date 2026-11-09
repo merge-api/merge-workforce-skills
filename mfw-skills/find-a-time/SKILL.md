@@ -3,7 +3,7 @@ name: find-a-time
 description: "Find open slots, schedule across attendees, resolve conflicts, and share booking links. Use when the user says 'find time with X', 'schedule a meeting', or asks to fix a calendar conflict."
 ---
 
-# calendar-concierge
+# find-a-time
 
 ## When to use
 - User wants a meeting scheduled with one or more attendees.

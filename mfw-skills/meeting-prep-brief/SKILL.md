@@ -1,6 +1,6 @@
 ---
 name: meeting-prep-brief
-description: "Build a pre-meeting brief from a calendar event: attendees, last interactions, open threads, and talking points. Use when the meeting can be found on the calendar, as in 'prep me for my next meeting', 'brief me on the 2pm call', or a sweep of the coming days' external meetings. When the user names an account instead and there is no event to look up, use call-prep-one-pager instead."
+description: "Build a pre-meeting brief from a calendar event: attendees, last interactions, open threads, and talking points. Use when the meeting can be found on the calendar, as in 'prep me for my next meeting', 'brief me on the 2pm call', or a sweep of the coming days' external meetings."
 ---
 
 # meeting-prep-brief
@@ -10,7 +10,7 @@ description: "Build a pre-meeting brief from a calendar event: attendees, last i
 - User wants background on the people or company they are about to meet.
 - User asks "what's the state of things with X" right before a call.
 - User wants a prep pack covering all external meetings in the coming days.
-- Not this skill: a named account with no calendar event behind it. That is call-prep-one-pager. The boundary is where the attendee list comes from: google_calendar here, the user's own words there.
+- Not this skill: a named account with no calendar event behind it. This skill takes its attendee list from google_calendar; if there is no event, ask the user which meeting they mean.
 
 ## Steps
 1. Check connections first. For each connector below, confirm it is signed in and that the tools this skill needs are available; access can be granted per tool, so a signed-in connector can still be missing one. Tell the user which connectors need sign-in or an access request and what that rules out, then continue with the ready ones.
@@ -31,7 +31,7 @@ description: "Build a pre-meeting brief from a calendar event: attendees, last i
 
 ## Output
 - One brief per meeting: meeting title and time; attendee bios (name, title, company); relationship state (deal stage, owner); last interaction summary with date and source; open threads and owed replies; suggested talking points.
-- Every claim cites its source system inline (CRM, gong, gmail).
+- Every claim cites its source system inline (CRM, Gong, Gmail).
 - Gaps stated explicitly ("no CRM record for X").
 - Multiple meetings ordered by start time, one brief each, capped at 5 per run.
 

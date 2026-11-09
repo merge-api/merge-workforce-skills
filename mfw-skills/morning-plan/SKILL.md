@@ -3,7 +3,7 @@ name: morning-plan
 description: "Morning digest of unread messages, today's calendar, and assigned work. Use when the user says 'morning briefing', 'what's on my plate today', or asks to catch up after time away."
 ---
 
-# daily-briefing
+# morning-plan
 
 ## When to use
 - User asks for their morning or start-of-day summary.
@@ -28,7 +28,7 @@ description: "Morning digest of unread messages, today's calendar, and assigned 
 9. Keep it read-only. If the user asks to act on an item (reply, reschedule, complete a task), hand that to the matching skill or tool flow with its own confirmation.
 
 ## Output
-- A briefing in four short sections: Needs you (direct asks with source links), Today's calendar (times and one-line context), Work due (task, tracker, due date), FYI (two-line max each).
+- A briefing in four short sections: Needs you (direct asks with source links), Today's calendar (times and one-line context), Work due (task, tracker, due date), FYI (one line each).
 - Total length under one screen; details on request, not by default.
 - Counts of anything truncated by caps, so nothing disappears silently.
 - A link on every item so the user can jump straight to the thread, event, or task.
