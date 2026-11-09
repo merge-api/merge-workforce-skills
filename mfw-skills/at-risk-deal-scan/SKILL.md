@@ -30,7 +30,7 @@ description: "Cross-references call sentiment, support issues, and engagement to
 5. Support signals. On pylon, use search_accounts to match the company, then search_issues for open or recently escalated issues; a stack of unresolved tickets during a sales cycle is a strong risk marker.
 6. Score each deal:
    - Record what, where, and when for every signal found.
-   - Rate risk high, medium, or low from the count and severity of concrete signals, never from vibes.
+   - Rate risk high, medium, or low from the count and severity of concrete signals, never from gut feel.
    - Deals with no data are "unknown", not "low".
 7. Present the report. Read-only by default; if the user wants follow-up tasks created for owners, confirm the exact tasks first, then use the CRM's create-task tool.
 
