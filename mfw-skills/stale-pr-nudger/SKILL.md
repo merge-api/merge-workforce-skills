@@ -21,11 +21,11 @@ description: "Find open PRs waiting on review past an SLA and ping the responsib
 2. Confirm scope: which repos (or org), and the SLA threshold. Default to 48 business hours if the user gives none, and say so.
 3. List open PRs per repo: find the list-pull-requests tool on the github connector. Filter to non-draft PRs. Cap at 100 PRs per repo; if more, ask the user to narrow by label or team.
 4. For each candidate, fetch requested reviewers and existing reviews (find the PR-reviews tool). A PR is stale when it has had no review activity since the SLA window began and still has pending requested reviewers.
-5. Exclude PRs with failing required checks if the user wants "actionable" nudges only; ask once which behavior they want and remember it for the session.
-6. Group stale PRs by pending reviewer. Draft one message per reviewer listing their waiting PRs with links and wait times.
-7. Present all drafts and the delivery target (slack channel, slack DM, or microsoft_teams chat). Send only after the user confirms recipients and text. Find the post-message tool on the slack or microsoft_teams connector to deliver.
-8. Report delivery results, including any reviewer you could not resolve to a chat handle.
-9. Skip PRs labeled on-hold, WIP, or do-not-nudge; list them separately so they are visible but unpinged.
+5. Skip PRs labeled on-hold, WIP, or do-not-nudge; list them separately so they are visible but unpinged.
+6. Exclude PRs with failing required checks if the user wants "actionable" nudges only; ask once which behavior they want and remember it for the session.
+7. Group stale PRs by pending reviewer. Draft one message per reviewer listing their waiting PRs with links and wait times.
+8. Present all drafts and the delivery target (slack channel, slack DM, or microsoft_teams chat). Send only after the user confirms recipients and text. Find the post-message tool on the slack or microsoft_teams connector to deliver.
+9. Report delivery results, including any reviewer you could not resolve to a chat handle.
 
 ## Output
 - A table of stale PRs: repo, PR number and title, author, pending reviewers, days waiting, check status. Sorted by longest wait first.

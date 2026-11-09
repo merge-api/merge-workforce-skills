@@ -3,7 +3,7 @@ name: release-notes
 description: "Drafts release notes from merged PRs and closed tickets between two releases. Use when the user says 'write the release notes', 'draft the changelog for v2.3', or asks what shipped since the last release."
 ---
 
-# release-notes-generator
+# release-notes
 
 ## When to use
 - User asks for release notes or a changelog for an upcoming or just-cut release.

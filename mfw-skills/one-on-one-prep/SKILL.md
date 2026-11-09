@@ -8,7 +8,7 @@ description: Before each 1:1 on the manager's calendar, a short brief on that pe
 ## When to use
 - "Prep me for my 1:1s today." / "Prep me for my 1:1 with <name> this afternoon."
 - Scheduled weekday run before the manager's first 1:1.
-- Not this skill: external meetings (use merge-meeting-prep-brief); group meetings.
+- Not this skill: external meetings (use meeting-prep-brief); group meetings.
 
 ## Steps
 1. Check connections first. For each connector below, confirm it is signed in and that the tools this skill needs are available; access can be granted per tool, so a signed-in connector can still be missing one. Tell the user which connectors need sign-in or an access request and what that rules out, then continue with the ready ones.
