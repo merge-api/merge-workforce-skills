@@ -3,7 +3,7 @@ name: at-risk-deal-scan
 description: "Cross-references call sentiment, support issues, and engagement to flag at-risk deals. Use when the user says 'which deals are at risk', 'health check on my open deals', or asks why a specific deal feels shaky."
 ---
 
-# deal-risk-signals
+# at-risk-deal-scan
 
 ## When to use
 - User wants an at-risk sweep across open deals for a team, owner, or quarter.
@@ -17,20 +17,20 @@ description: "Cross-references call sentiment, support issues, and engagement to
    - Merge CLI, if you can run shell commands and `merge --version` works: run the same checks with `merge execute-tool <connector>__validate_credential '{"input": {}}'` and `merge search-tools "<intent>" --connector <connector>`. For sign-in, `merge authenticate <connector>` prints a link; give it to the user and wait until they say they're done.
    - Other tools for these apps already in this conversation: make this skill's first read call on each connector and report the error it returns.
    - None of these: don't guess or work from memory. Tell the user how to connect Merge Agent Handler. Then follow the Required line below: where it says how to go on without a connector, do that; otherwise wait. They set it up and sign in themselves; don't create accounts or change their settings for them. It needs an Agent Handler account from their company (admin setup: https://docs.merge.dev/merge-agent-handler/setup/agent-handler-for-employees). Claude Code: `claude mcp add --transport http agent-handler https://ah-api.merge.dev/mcp`, then `/mcp` to sign in. Claude on web or desktop: an org admin adds `https://ah-api.merge.dev/mcp` as a custom connector, then the user connects Agent Handler at https://claude.ai/customize/connectors. Other MCP clients: the setup page above. Any agent with a terminal: `pipx install merge-api`, then `merge login`. New tools often appear only in a new conversation; if so, the user starts one and asks again.
-   Required: hubspot or salesforce; gong. Optional: pylon. Stop if neither a CRM nor gong is ready. Without a CRM, say the deal list is limited to deals that appear on gong calls.
-2. Scope the deal set. On the CRM in use, find the deals search tool (search_deals on hubspot, search_opportunities on salesforce) and pull open deals with stage, amount, close date, owner, and associated contacts and company. Cap the sweep at 50 deals; for one named deal, go deep instead.
-3. Engagement signals from the CRM: last activity date, unanswered emails, meetings canceled or not rebooked, single-threaded deals (only one contact associated).
+   Required: hubspot or salesforce. Optional: gong, pylon. Stop if no CRM is ready; the deal list comes from it. Without gong, skip step 4 and say the report has no call signals.
+2. Scope the deal set. On the CRM in use, find the deals search tool (search_deals on hubspot, search_opportunities on salesforce) and pull open deals with stage, amount, close date, owner, and associated contacts and company. Apply the user's owner, team, or quarter scope first, then cap the sweep at 50 deals, soonest close date first. Say how many matched and how many you scanned, and offer the next batch if any are left. For one named deal, go deep instead.
+3. Engagement signals from the CRM: last activity date, unanswered emails, meetings canceled or not rebooked, and deals with only one contact recorded. Flag unanswered emails or canceled meetings only when the activity history you retrieved shows it; if the history isn't available, mark it unknown.
 4. Call signals. Gong can't filter calls by account, so pull the deal owners' calls and match them to deals:
    - Map each deal owner to a Gong user by email with list_users. Owners with no Gong user get no call signals; say so rather than counting it as low risk.
    - Run search_calls_extensive with primaryUserIds set to those users, fromDateTime and toDateTime covering the last 45 days, contentSelector context "Extended", and exposedFields parties=true. Page through with the cursor. This returns calls the owners hosted; say that calls hosted by someone else on the deal are not covered.
-   - Match each call to a deal from step 2 by the Opportunity or Account ID in its Salesforce context, or by an external party's email domain matching the deal's company domain (the route for hubspot deals). Ignore calls that match no deal in the set.
-   - Note shrinking call frequency from the dates of all matched calls per deal, and missing decision makers from the external attendees' titles in parties.
+   - Match each call to a deal from step 2 by the Opportunity ID in its Salesforce context. Account ID or an external party's email domain matching the deal's company (the route for hubspot deals) only works when one open deal in the set has that account; if several do, report the call as account-level context and don't count it toward any one deal. Ignore calls that match no deal in the set.
+   - Note shrinking call frequency from the dates of all matched calls per deal. Flag a missing decision maker only when the CRM or a call names who decides and that person hasn't been on the recent calls; otherwise mark decision-maker coverage unknown.
    - For the latest 3 matched calls per deal, get the briefs: run search_calls_extensive with those callIds, batched into one request, and exposedFields content.brief=true. From the briefs, note competitor mentions and pricing pushback.
    - Pull a transcript with get_call_transcript only for a deal the user is drilling into.
 5. Support signals. On pylon, use search_accounts to match the company, then search_issues for open or recently escalated issues; a stack of unresolved tickets during a sales cycle is a strong risk marker.
 6. Score each deal:
    - Record what, where, and when for every signal found.
-   - Rate risk high, medium, or low from the count and severity of concrete signals, never from vibes.
+   - Rate risk high, medium, or low from the count and severity of concrete signals, never from gut feel.
    - Deals with no data are "unknown", not "low".
 7. Present the report. Read-only by default; if the user wants follow-up tasks created for owners, confirm the exact tasks first, then use the CRM's create-task tool.
 
