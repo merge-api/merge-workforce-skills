@@ -1,6 +1,7 @@
 ---
 name: email-campaign-builder
 description: "Builds, segments, and schedules email campaigns in the marketing platform. Use when the user says 'set up the newsletter send', 'build a campaign for the launch', 'email this segment', or wants a campaign scheduled."
+license: MIT
 ---
 
 # email-campaign-builder

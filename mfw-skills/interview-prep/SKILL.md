@@ -1,6 +1,7 @@
 ---
 name: interview-prep
 description: "Brief the user on each candidate they interview today, with 3 to 5 questions aimed at gaps in earlier interview feedback. Use when the user says 'prep me for my interviews today', 'what did earlier interviewers not cover for X', or on a weekday-morning schedule."
+license: MIT
 ---
 
 # interview-prep

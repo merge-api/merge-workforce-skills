@@ -1,6 +1,7 @@
 ---
 name: renewal-and-usage-brief
 description: "Put an account's contract history next to its actual usage and call it expand, hold, or at risk, with the numbers behind it. Use when the user says 'give me a renewal brief for X', 'is X using what they pay for', or asks how to approach an upcoming renewal."
+license: MIT
 ---
 
 # renewal-and-usage-brief

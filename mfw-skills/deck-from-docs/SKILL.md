@@ -1,6 +1,7 @@
 ---
 name: deck-from-docs
 description: "Turn a doc or notes into a slide deck in the user's presentation tool. Use when the user says 'make this a deck', 'turn these notes into slides', or asks for a presentation from existing content."
+license: MIT
 ---
 
 # deck-from-docs

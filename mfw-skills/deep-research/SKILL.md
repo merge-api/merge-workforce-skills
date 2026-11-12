@@ -1,6 +1,7 @@
 ---
 name: deep-research
 description: "Run multi-source research on a question and produce a cited report. Use when the user says 'do deep research on X', 'find everything credible about Y', or asks a question needing web, literature, and trial-registry sources."
+license: MIT
 ---
 
 # deep-research

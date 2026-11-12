@@ -1,6 +1,7 @@
 ---
 name: find-a-time
 description: "Find open slots, schedule across attendees, resolve conflicts, and share booking links. Use when the user says 'find time with X', 'schedule a meeting', or asks to fix a calendar conflict."
+license: MIT
 ---
 
 # calendar-concierge

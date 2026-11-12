@@ -1,6 +1,7 @@
 ---
 name: at-risk-deal-scan
 description: "Cross-references call sentiment, support issues, and engagement to flag at-risk deals. Use when the user says 'which deals are at risk', 'health check on my open deals', or asks why a specific deal feels shaky."
+license: MIT
 ---
 
 # at-risk-deal-scan

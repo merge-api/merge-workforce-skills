@@ -1,6 +1,7 @@
 ---
 name: meeting-prep-brief
 description: "Build a pre-meeting brief from a calendar event: attendees, last interactions, open threads, and talking points. Use when the meeting can be found on the calendar, as in 'prep me for my next meeting', 'brief me on the 2pm call', or a sweep of the coming days' external meetings. When the user names an account instead and there is no event to look up, use call-prep-one-pager instead."
+license: MIT
 ---
 
 # meeting-prep-brief

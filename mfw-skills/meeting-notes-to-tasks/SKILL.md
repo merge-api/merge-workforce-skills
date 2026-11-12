@@ -1,6 +1,7 @@
 ---
 name: meeting-notes-to-tasks
 description: "Pull meeting notes or transcripts, extract decisions and action items, and file tasks in the tracker. Use when the user says 'what were the action items', 'turn the meeting notes into tasks', or asks to file follow-ups from a call."
+license: MIT
 ---
 
 # meeting-notes-to-actions
