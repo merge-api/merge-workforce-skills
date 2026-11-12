@@ -1,6 +1,7 @@
 ---
 name: one-on-one-prep
 description: Before each 1:1 on the manager's calendar, a short brief on that person's recent work - what happened, why it needs the manager, and one move to make. Use when the user says "prep me for my 1:1s", "prep me for my 1:1 with <name>", or on a weekday-morning schedule. Read-only. Output goes to chat, not email.
+license: MIT
 ---
 
 # one-on-one-prep

@@ -1,6 +1,7 @@
 ---
 name: stale-pr-nudger
 description: "Find open PRs waiting on review past an SLA and ping the responsible reviewers in chat. Use when the user says 'nudge stale PRs', 'what PRs are waiting on review', or asks to chase reviewers."
+license: MIT
 ---
 
 # stale-pr-nudger

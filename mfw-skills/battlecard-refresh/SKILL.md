@@ -1,6 +1,7 @@
 ---
 name: battlecard-refresh
 description: "Update a competitive battlecard from the period's win/loss records, call notes, and deal reviews, with every claim dated and sourced. Use when the user says 'update the battlecard', 'refresh our positioning against a competitor', or asks what was learned about a competitor last quarter."
+license: MIT
 ---
 
 # battlecard-refresh

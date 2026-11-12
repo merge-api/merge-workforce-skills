@@ -1,6 +1,7 @@
 ---
 name: alert-triage-to-fix-pr
 description: "Triage a Sentry error alert, size its impact, reply in the alert's Slack thread, and open a draft fix PR for a human to review. Use when the user says 'triage this alert', 'draft a fix for this Sentry issue', or asks how many users an error is affecting."
+license: MIT
 ---
 
 # alert-triage-to-fix-pr

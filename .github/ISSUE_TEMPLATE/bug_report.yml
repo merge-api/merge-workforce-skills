@@ -1,0 +1,50 @@
+name: Bug report
+description: Report a problem with a skill, the get-started prompt, or the prompt build script
+labels: ["bug"]
+body:
+  - type: input
+    id: skill
+    attributes:
+      label: Skill or component
+      description: Which skill or part of the repo is affected? (e.g. `morning-plan`, `get-started.md`, `scripts/prompts.ts`)
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+      description: What behavior were you expecting instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps to reproduce the issue.
+      placeholder: |
+        1. Install the `morning-plan` skill and ask "what's on my plate today"
+        2. ...
+        3. See error
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Agent and version (e.g. Claude Code 2.x), OS, and which apps are connected through Agent Handler.
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or output
+      description: Paste any relevant error messages or transcript snippets. Redact API keys, tokens, and any customer or employee data.
+    validations:
+      required: false

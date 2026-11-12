@@ -54,3 +54,7 @@ Each workflow checks its access in step 1 and tells you what to connect if somet
 | [Vendor bill review](mfw-skills/vendor-bill-review/SKILL.md) | Bills due, overdue, and possible duplicates | NetSuite or QuickBooks Online |
 
 Building the prompts for the website is covered in [`scripts/README.md`](scripts/README.md).
+
+## License
+
+[MIT](LICENSE).

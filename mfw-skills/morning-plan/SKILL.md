@@ -1,6 +1,7 @@
 ---
 name: morning-plan
 description: "Morning digest of unread messages, today's calendar, and assigned work. Use when the user says 'morning briefing', 'what's on my plate today', or asks to catch up after time away."
+license: MIT
 ---
 
 # daily-briefing

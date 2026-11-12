@@ -1,6 +1,7 @@
 ---
 name: crm-hygiene-audit
 description: "Audit open CRM opportunities for missing required fields, stale deals, and contradictions, then nudge each owner in Slack once the user approves. Use when the user says 'run a CRM hygiene audit', 'which deals have close dates in the past', or asks which owners need to clean up their pipeline."
+license: MIT
 ---
 
 # crm-hygiene-audit

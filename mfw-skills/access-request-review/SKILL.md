@@ -1,6 +1,7 @@
 ---
 name: access-request-review
 description: Review pending access requests (ServiceNow or Jira Service Management) against the requester's Okta role, groups and peers' access, and recommend approve, deny, or send to a human, with a reason. Recommendations only by default. Use when asked "review the pending access requests" or "should <user> get access to <app/group>?".
+license: MIT
 ---
 
 # access-request-review

@@ -1,6 +1,7 @@
 ---
 name: ticket-triage
 description: "Classify, prioritize, and route incoming support tickets in the team's help desk. Use when the user says 'triage the queue', 'what came in overnight', or asks to prioritize or route new support tickets."
+license: MIT
 ---
 
 # ticket-triage

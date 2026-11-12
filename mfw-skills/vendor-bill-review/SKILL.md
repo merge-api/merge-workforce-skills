@@ -1,6 +1,7 @@
 ---
 name: vendor-bill-review
 description: "Weekly review of open vendor bills: what is due, what is overdue, and what looks like a duplicate or is missing details. Use when the user says 'which bills are due this week', 'check for duplicate bills', or asks for a pre-payment-run review."
+license: MIT
 ---
 
 # vendor-bill-review
